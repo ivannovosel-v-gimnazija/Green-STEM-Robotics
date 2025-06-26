@@ -42,8 +42,6 @@
 MPU6050 mpu;
 //MPU6050 mpu(0x69); // <-- use for AD0 high
 
-bool blinkState = false;
-
 // MPU control/status vars
 bool dmpReady = false;  // set true if DMP init was successful
 uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
@@ -68,7 +66,7 @@ int global_fifo_count = 0; //made global so can monitor from outside GetIMUHeadi
 
 void setup()
 {
-	#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+  #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
         Wire.begin();
   #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
         Fastwire::setup(400, true);
@@ -119,9 +117,7 @@ void setup()
 		Serial.print(devStatus);
 		Serial.println(F(")"));
 	}
-
-	// configure LED for output
-	pinMode(LED_PIN, OUTPUT);
+	
 	lastIMUCheck = 0; //this manages 'other program stuff' cycle
 }
 
@@ -168,7 +164,6 @@ void loop()
 void getYPR()
 {
 	// At least one data packet is available
- 
 	mpuIntStatus = mpu.getIntStatus();
 	fifoCount = mpu.getFIFOCount();// get current FIFO count
  
