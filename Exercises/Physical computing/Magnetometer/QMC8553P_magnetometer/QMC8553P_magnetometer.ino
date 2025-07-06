@@ -1,3 +1,35 @@
+/*
+  QMC5883P magnetometer example code
+  Author: Ivan Novosel
+  Date: 2025-07-06
+
+  This code is a showcase of how to write code for a digital sensor you don't have a library for. As of writing this there was
+  no Arduino library to easily use the sensor. Use the datasheet for the sensor for additional information. Adapt it freely for
+  your usecase.
+
+  Functions implemented:
+  void initQMC5883P(uint8_t mode, uint8_t data_rate, uint8_t oversample, uint8_t downsample, uint8_t sr_mode, uint8_t range)
+  Sets the configuration for the sensor, particular config strings are defined at beggining of the code but a sensible
+  default is set if you don't want to change particular settings.
+
+  void reset()
+  Should do the soft reset of the sensor. It does the reset but currently the sensor will not restart after this, upload
+  new settings for it to work again. This was made mostly to test how certain settings work (or not).
+
+  int get_config(uint8_t& regA, uint8_t& regB)
+  Reads the state of config registers, mainly used for debugging.
+
+  bool data_ready()
+  Returns true if the measurement registers are ok to read (only checks the DRDY bit).
+
+  void read_raw_xyz(int16_t& x, int16_t& y, int16_t& z)
+  Returns raw data from the sensor into provided variables. Check status of data with data_ready() function before reading.
+
+  void read_gauss_xyz(float& x, float& y, float& z, uint8_t range)
+  Returns data from sensor in Gauss, the default is set for 2Gauss range, the range used in this function must be the same as
+  used in setting up the sensor at initialization.
+*/
+
 #include <Wire.h>
 
 // default I2C address for QMC5883P
@@ -72,7 +104,7 @@ void initQMC5883P(uint8_t mode=CONTINUOUS, // continuous mode
 // sets all configuration settings, provide your own if you don't want the default above
 void initQMC5883P(uint8_t mode, uint8_t data_rate, uint8_t oversample, uint8_t downsample, uint8_t sr_mode, uint8_t range) {
   // defines the direction of the reference system
-  // mentioned application examples
+  // mentioned in application examples in datasheet
   Wire.beginTransmission(QMC5883P_ADDR);
   Wire.write(0x29);
   Wire.write(0x06);
